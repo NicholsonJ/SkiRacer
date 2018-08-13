@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  border: 1px solid black;
+}
+
+#game-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  background: blue;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 40vw;
+}
+
+header .h1 {
+}
+
+body button {
+  font-size: 20px;
+  background-color: black;
+  color: #fff;
+  padding: 10px 20px;
+  border: 0;
+  box-shadow: 0;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
