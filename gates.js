@@ -7,9 +7,9 @@ function Gate(x, y, width, height, imgSrc, ctx) {
 
   this.img = new Image();
   this.img.src = imgSrc;
-  this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  this.ctx.drawImage(this.img, this.x, this.y, this.img.width / 10, this.height);
 
   this.drawGates = function() {
-    this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height); //!!
+    this.ctx.drawImage(this.img, this.x, this.y, this.img.width / 10, this.height); //!!
   };
 }

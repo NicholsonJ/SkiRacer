@@ -11,7 +11,7 @@ var gateBlue = 'images/ski-gate-blue.jpg';
 var frames = 0;
 var background = {
   whiteBackground: function() {
-    ctx.fillStyle = '#E7E7E7';
+    ctx.fillStyle = '#F6F6F6';
     ctx.fillRect(0, 0, 500, 900);
   }
 };
@@ -30,14 +30,11 @@ window.onload = function() {
     switch (e.keyCode) {
       case 39:
         racer.moveRight();
-        console.log('move right');
         break;
       case 37:
         racer.moveLeft();
-        console.log('move left');
         break;
     }
-    updateCanvas();
   };
 
   function updateCanvas() {
@@ -52,22 +49,21 @@ window.onload = function() {
     frames++;
   }
 
-  //   function startGame() {
-  //     ctx.fillStyle = '#FDF6E1';
-  //     ctx.fillRect(0, 0, 500, 900);
-  //     racer.drawRacer();
-  //   }
-
   function createGate() {
     var y = canvasHeight;
-    var minWidth = 20;
-    var maxWidth = 400;
+    var minWidth = 1;
+    var maxWidth = 360;
     var width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
-    var minGap = 50;
+    var minGap = 90;
     var maxGap = 200;
     var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-    myGates.push(new Gate(0, y, width, 40, gateRed, ctx));
-    myGates.push(new Gate(width + gap, y, y - width - gap, 40, gateBlue, ctx));
+    if (width + gap >= 430) {
+      width = 330;
+      gap = 80;
+      console.log('adjusted gap');
+    }
+    myGates.push(new Gate(width, y, 10, 40, gateRed, ctx));
+    myGates.push(new Gate(width + gap, y, 10, 40, gateBlue, ctx));
   }
 
   function updateGates() {
@@ -75,9 +71,9 @@ window.onload = function() {
       myGates[i].y -= 10;
       myGates[i].drawGates();
       //   if (racer.checkIfCrash(myGates[i])) {
-      //     stopGame();
-      //     console.log('gate logs a crash');
-      //     return;
+      // stopGame();
+      // console.log('gate logs a crash');
+      // return;
       //   }
     }
   }
