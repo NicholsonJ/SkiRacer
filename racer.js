@@ -1,18 +1,17 @@
-function RacerConstructor(x, ctx) {
+var racerImageL = new Image();
+racerImageL.src = 'images/SkiierLeft.jpg';
+var racerImageR = new Image();
+racerImageR.src = 'images/SkiierRight.jpg';
+
+function RacerConstructor(x, racerImg, ctx) {
   this.x = x;
   this.y = 50;
   this.ctx = ctx;
-  this.drawRacerL = function() {
-    ctx.fillStyle = 'black';
-    this.racerImageL = new Image();
-    this.racerImageL.src = '/images/SkiierLeft.jpg';
-    ctx.drawImage(this.racerImageL, this.x, this.y, 60 * 0.799, 60);
-    //ctx.fillRect(this.x, 50, 30, 30);
-  };
-  this.drawRacerR = function() {
-    this.racerImageR = new Image();
-    this.racerImageR.src = '/images/SkiierRight.jpg';
-    ctx.drawImage(this.drawRacerR, this.x, this.y, 60 * 0.799, 60);
+  this.racerImg = racerImg;
+  this.width = 20 * 0.799;
+  this.height = 20;
+  this.drawRacer = function() {
+    ctx.drawImage(this.racerImg, this.x, this.y, this.width, this.height);
   };
   this.moveLeft = function() {
     this.x -= 25;
@@ -26,34 +25,26 @@ function RacerConstructor(x, ctx) {
       this.x = 390;
     }
   };
-  this.checkIfCrash = function(gate) {
-    var myright = this.x + this.width;
-    var myleft = this.x;
-    var mytop = this.y;
-    var mybottom = this.y + this.height;
+  this.accumulatePoints = function(gateL, gateR) {
+    var racerRight = this.x + this.width;
+    var racerLeft = this.x;
+    var racerTop = this.y;
+    var racerBottom = this.y + this.height;
 
-    var otherleft = gate.x;
-    var othertop = gate.y;
-    var otherbottom = gate.y + gate.height;
-    var otherright = gate.x + gate.width;
-    var crash = true;
-    if (mybottom < othertop || mytop > otherbottom || myright < otherleft || myleft > otherright) {
-      crash = false;
+    var gapLeft = gateL.x + gateL.width;
+    var gapRight = gateR.x;
+    var gapTop = gateL.y;
+    var gapBottom = gateL.y + gateL.height;
+    var points = true;
+    if (
+      racerBottom <= gapBottom &&
+      racerLeft >= gapLeft &&
+      racerRight <= gapRight &&
+      racerTop >= gapTop
+    ) {
+      console.log("I'm inside!");
+      points = false;
     }
-    return crash;
+    return points;
   };
 }
-
-// var myright = this.x + this.width;
-// var mytop = this.y;
-// var mybottom = this.y + this.height;
-// var myleft = this.x;
-
-// var otherleft = obstacle.x;
-// var othertop = obstacle.y;
-// var otherbottom = obstacle.y + obstacle.height;
-// var otherright = obstacle.x + obstacle.width;
-
-// if (mybottom < othertop || mytop > otherbottom || myright < otherleft || myleft > otherright) {
-//   crash = false;
-// }

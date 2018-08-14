@@ -1,13 +1,11 @@
-console.log('hello world');
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
 var isGameStarted = false;
 var canvasWidth = ctx.canvas.width;
 var canvasHeight = ctx.canvas.height;
-var racer = new RacerConstructor(250, ctx);
+var racer = new RacerConstructor(250, racerImageL, ctx);
 var myGates = [];
-var gateRed = 'images/ski-gate-red.jpg';
-var gateBlue = 'images/ski-gate-blue.jpg';
+
 var frames = 0;
 var background = {
   whiteBackground: function() {
@@ -15,6 +13,7 @@ var background = {
     ctx.fillRect(0, 0, 500, 900);
   }
 };
+var score = 0;
 
 window.onload = function() {
   //start button begins game
@@ -30,66 +29,60 @@ window.onload = function() {
     switch (e.keyCode) {
       case 39:
         racer.moveRight();
+        racer.racerImg = racerImageR;
         break;
       case 37:
         racer.moveLeft();
+        racer.racerImg = racerImageL;
         break;
     }
   };
+  document.getElementById('refresh').onclick = function() {
+    location.reload();
+    document.getElementById('header').scrollIntoView();
+  };
+
+  function startGame() {
+    interval = setInterval(updateCanvas, 1000 / 10); //!!
+  }
 
   function updateCanvas() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     if (frames % 75 === 0) {
       createGate();
     }
-    drawScore();
+
     background.whiteBackground();
-    racer.drawRacerL();
+    drawScore();
+    racer.drawRacer();
     updateGates();
     frames++;
-  }
-
-  function createGate() {
-    var y = canvasHeight;
-    var minWidth = 1;
-    var maxWidth = 360;
-    var width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
-    var minGap = 90;
-    var maxGap = 200;
-    var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-    if (width + gap >= 430) {
-      width = 330;
-      gap = 80;
-      console.log('adjusted gap');
+    if (frames === 1200) {
+      stopGame();
     }
-    myGates.push(new Gate(width, y, 10, 40, gateRed, ctx));
-    myGates.push(new Gate(width + gap, y, 10, 40, gateBlue, ctx));
   }
 
   function updateGates() {
     for (i = 0; i < myGates.length; i++) {
       myGates[i].y -= 10;
       myGates[i].drawGates();
-      //   if (racer.checkIfCrash(myGates[i])) {
-      // stopGame();
-      // console.log('gate logs a crash');
-      // return;
-      //   }
+      if (myGates[i].y < -80) {
+        myGates.splice(i, 1);
+      }
+    }
+
+    if (!racer.accumulatePoints(myGates[0], myGates[1])) {
+      score += 1;
     }
   }
 
   function drawScore() {
-    var scoreText = 'Score: ' + frames;
+    var scoreText = 'Score: ' + score;
     ctx.font = '30px sans-serif';
     ctx.fillStyle = 'green';
-    ctx.fillText(scoreText, 700, 45);
+    ctx.fillText(scoreText, 45, 500);
   }
 
-  function startGame() {
-    interval = setInterval(function() {
-      updateCanvas();
-    }, 1000 / 40); //!!
-  }
   function stopGame() {
     clearInterval(interval);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -98,7 +91,8 @@ window.onload = function() {
     this.ctx.font = '40px monospace';
     this.ctx.fillStyle = 'red';
     this.ctx.fillText('GAME OVER!', canvasWidth / 3, canvasHeight / 3);
-    this.ctx.fillText('Score: ' + frames, canvasWidth / 3, canvasHeight / 2);
+    this.ctx.fillText('Score: ' + score, canvasWidth / 3, canvasHeight / 2);
     console.log('end of game');
+    document.getElementById('refresh').style.display = 'block';
   }
 };
