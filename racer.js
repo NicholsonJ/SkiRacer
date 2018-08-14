@@ -8,8 +8,8 @@ function RacerConstructor(x, racerImg, ctx) {
   this.y = 50;
   this.ctx = ctx;
   this.racerImg = racerImg;
-  this.width = 20 * 0.799;
-  this.height = 20;
+  this.width = 80 * 0.799;
+  this.height = 80;
   this.drawRacer = function() {
     ctx.drawImage(this.racerImg, this.x, this.y, this.width, this.height);
   };
@@ -33,7 +33,7 @@ function RacerConstructor(x, racerImg, ctx) {
 
     var gapLeft = gateL.x + gateL.width;
     var gapRight = gateR.x;
-    var gapTop = gateL.y;
+    var gapTop = gateL.y - 40;
     var gapBottom = gateL.y + gateL.height;
     var points = true;
     if (

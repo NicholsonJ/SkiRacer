@@ -5,14 +5,21 @@ var canvasWidth = ctx.canvas.width;
 var canvasHeight = ctx.canvas.height;
 var racer = new RacerConstructor(250, racerImageL, ctx);
 var myGates = [];
-
-var frames = 0;
+var treesArray = [];
 var background = {
   whiteBackground: function() {
     ctx.fillStyle = '#F6F6F6';
+    var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
+
+    grd.addColorStop(0, '#F6F6F6'); //white
+    grd.addColorStop(1, '#DAF2D9'); //blue
+
+    ctx.fillStyle = grd;
     ctx.fillRect(0, 0, 500, 900);
   }
 };
+
+var frames = 0;
 var score = 0;
 
 window.onload = function() {
@@ -43,7 +50,7 @@ window.onload = function() {
   };
 
   function startGame() {
-    interval = setInterval(updateCanvas, 1000 / 10); //!!
+    interval = setInterval(updateCanvas, 1000 / 40); //!!
   }
 
   function updateCanvas() {
@@ -53,26 +60,32 @@ window.onload = function() {
     }
 
     background.whiteBackground();
+    if (frames % 13 === 0) {
+      createTrees();
+    }
+
     drawScore();
     racer.drawRacer();
+    updateTrees();
     updateGates();
+    if (frames % 2 === 0) {
+      createSnowflakes();
+      drawSnowflakes();
+      updateSnowflakes();
+    }
     frames++;
     if (frames === 1200) {
       stopGame();
     }
   }
 
-  function updateGates() {
-    for (i = 0; i < myGates.length; i++) {
-      myGates[i].y -= 10;
-      myGates[i].drawGates();
-      if (myGates[i].y < -80) {
-        myGates.splice(i, 1);
+  function updateTrees() {
+    for (i = 0; i < treesArray.length; i++) {
+      treesArray[i].y -= 10;
+      treesArray[i].drawTrees();
+      if (treesArray[i].y < -80) {
+        treesArray.splice(i, 1);
       }
-    }
-
-    if (!racer.accumulatePoints(myGates[0], myGates[1])) {
-      score += 1;
     }
   }
 

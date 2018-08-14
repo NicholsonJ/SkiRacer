@@ -9,8 +9,17 @@ header {
   align-items: center;
   flex-direction: column;
   height: 100vh;
-  background-image: url('images/Opener_background.jpg');
+  /* background-image: url('images/Opener_background.jpg'); */
   background-image: linear-gradient(to bottom, #ffffff, #555d68);
+}
+
+.headerImage {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-repeat: no-repeat;
 }
 
 body button {
