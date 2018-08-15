@@ -9,10 +9,13 @@ var isGameStarted = false;
 var frames = 1;
 var score = 0;
 var interval;
+var level = 1;
 
 //pictures
 var winningSkiier = new Image();
 winningSkiier.src = '/images/youWon.jpg';
+var crashedSkiier = new Image();
+crashedSkiier.src = '/images/CrashedSkiier.jpg';
 
 //characters
 var racer = new RacerConstructor(250, racerImageL, ctx);
@@ -54,10 +57,10 @@ window.onload = function() {
 
     //conditionals
     countdown();
-    if (frames % 75 === 0 && frames < 1000) {
+    if (frames % 75 === 0 && frames < 1100) {
       createGate();
     }
-    if (frames % 100 === 0) {
+    if (frames % 50 === 0 && frames < 1100) {
       createTrees();
     }
     if (frames % 2 === 0) {
@@ -72,16 +75,19 @@ window.onload = function() {
     updateTrees();
     updateSnowflakes();
 
+    //check if finished
+    if (frames >= 1100) {
+      createFans();
+      finishGate();
+    }
+
     //draw
     racer.drawRacer();
     drawScore();
     drawSnowflakes();
 
-    //check if finished
-    if (frames >= 1100) {
-      finishGate();
-    }
-    if (frames === 1200) {
+    //stop game
+    if (frames === 1250) {
       stopGame();
     }
   }
@@ -126,35 +132,62 @@ window.onload = function() {
   function stopGame() {
     clearInterval(interval);
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    ctx.fillStyle = '#F6F6F6';
     var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
-    grd.addColorStop(0, '#F6F6F6'); //white
-    grd.addColorStop(1, '#78828E'); //grey
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 500, 900);
-    ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = 'black';
-    ctx.fillRect(30, 0, this.canvas.width - 30, 110);
-    ctx.font = '40px monospace';
-    ctx.fillStyle = '#BE8238';
-    ctx.textAlign = 'center';
-    ctx.fillText('You won!', 250, 50);
-    ctx.fillText('Your score: ' + score, 250, 80);
-    console.log('end of game');
-    document.getElementById('refresh').style.display = 'block';
+    if (score >= 0) {
+      grd.addColorStop(0, '#F6F6F6'); //white
+      grd.addColorStop(1, '#78828E'); //grey
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, 500, 900);
+      ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = 'black';
+      ctx.fillRect(50, 0, 400, 110);
+      ctx.globalAlpha = 1;
+      ctx.font = '40px monospace';
+      ctx.fillStyle = '#BE8238';
+      ctx.textAlign = 'center';
+      ctx.fillText('You won!', 250, 50);
+      ctx.fillText('Your score: ' + score, 250, 80);
+      setTimeout(function() {
+        nextLevel();
+      }, 2000);
+    } else {
+      ctx.drawImage(crashedSkiier, -50, 0, canvasWidth + 100, canvasHeight);
+      ctx.fillStyle = 'black';
+      ctx.globalAlpha = 0.3;
+      ctx.fillRect(50, 50, 400, 110);
+      ctx.font = '40px monospace';
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = '#B30808';
+      ctx.textAlign = 'center';
+      ctx.fillText('Yard Sale...', 250, 100);
+      ctx.font = '30px monospace';
+      ctx.fillText('Better luck next time!', 250, 130);
+      ctx.font = '50px monospace';
+      ctx.fillStyle = '#22284A';
+      ctx.fillText('Your score: ' + score, 250, 650);
+      document.getElementById('refresh').style.display = 'block';
+    }
   }
 
   function nextLevel() {
-    frames = 0;
+    frames = 1;
     score = 0;
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    level++;
+    interval = setInterval(updateCanvas, 1000 / (40 + 10 * level));
   }
 
   function finishGate() {
     theFinish.y -= 10;
+    for (i = 0; i < fansArray.length; i++) {
+      fansArray[i].y -= 10;
+      fansArray[i].drawFans();
+    }
     theFinish.drawFinalGate();
   }
   function background() {
+    ctx.save();
+    ctx.globalAlpha = 0.9;
     ctx.fillStyle = '#F6F6F6';
     var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
 
@@ -163,5 +196,6 @@ window.onload = function() {
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, 500, 900);
+    ctx.restore();
   }
 };

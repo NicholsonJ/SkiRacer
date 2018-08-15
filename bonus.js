@@ -22,7 +22,7 @@ function Tree(x, y, width, height, ctx) {
   this.width = width;
   this.height = height;
   this.ctx = ctx;
-
+  this.crashed = false;
   this.drawTrees = function() {
     this.ctx.drawImage(trees, this.x, this.y, this.width, this.height);
   };
@@ -31,9 +31,8 @@ function Tree(x, y, width, height, ctx) {
 function createTrees() {
   var y = canvasHeight;
   var x = Math.floor(Math.random() * canvasWidth);
-  treesArray.push(new Tree(x, y, 40, 40, ctx));
+  treesArray.push(new Tree(x, y, 80, 80, ctx));
 }
-
 function updateTrees() {
   for (i = 0; i < treesArray.length; i++) {
     treesArray[i].y -= 10;
@@ -41,7 +40,11 @@ function updateTrees() {
     if (treesArray[i].y < -80) {
       treesArray.splice(i, 1);
     }
-    if (treesArray.length > 1 && !racer.deductPoints(treesArray[i])) {
+
+    if (treesArray.length > 0 && !treesArray[i].crashed && racer.deductPoints(treesArray[i])) {
+      console.log(treesArray[i].crashed);
+      console.log('inside trees deduction');
+      treesArray[i].crashed = true;
       score--;
     }
   }
@@ -49,23 +52,22 @@ function updateTrees() {
 
 //fans
 
-// function Fans(x, y, width, height, ctx) {
-//     this.x = x;
-//     this.y = y;
-//     this.width = width;
-//     this.height = height;
-//     this.ctx = ctx;
-//
-//     this.drawFans = function() {
-//       this.ctx.drawImage(fans, this.x, this.y, this.width, this.height);
-//     };
-//   }
-//
-// function createFans(){
-//     var y = canvasHeight;
-//   var x = Math.floor(Math.random() * canvasWidth);
-//   fansArray.push(new Fan(x, y, 40, 40, ctx));
-// }
+function Fans(x, y, width, height, ctx) {
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
+  this.ctx = ctx;
+  this.drawFans = function() {
+    this.ctx.drawImage(fans, this.x, this.y, this.width, this.height);
+  };
+}
+
+function createFans() {
+  var y = canvasHeight + 300;
+  var x = Math.floor(Math.random() * (canvasWidth + 300) - 300);
+  fansArray.push(new Fans(x, y, 200, 200, ctx));
+}
 //
 // function updateFans(){
 //     for (i = 0; i < fansArray.length; i++) {

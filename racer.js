@@ -42,29 +42,23 @@ function RacerConstructor(x, racerImg, ctx) {
       racerRight <= gapRight &&
       racerTop >= gapTop
     ) {
-      console.log("I'm inside!");
       points = false;
     }
     return points;
   };
   this.deductPoints = function(trees) {
-    var racerRight = this.x + this.width;
-    var racerLeft = this.x;
-    var racerTop = this.y + 40;
-    var racerBottom = this.y + this.height;
-
-    var treeR = trees.x * 3;
-    var treeL = (trees.x + trees.width) * 3;
-    var treeT = trees.y;
-    var treeB = trees.y + trees.height;
-    var points = true;
-    if (
-      racerBottom >= treeT &&
-      ((racerLeft <= treeR && racerRight >= treeR) || (racerRight >= treeL && racerLeft >= treeL))
-    ) {
-      console.log('Trees deduction');
-      points = false;
+    var myleft = this.x;
+    var myright = this.x + this.width;
+    var mytop = this.y;
+    var mybottom = this.y + this.height;
+    var otherleft = trees.x;
+    var otherright = trees.x + trees.width;
+    var othertop = trees.y;
+    var otherbottom = trees.y + trees.height;
+    var crash = true;
+    if (mybottom < othertop || mytop > otherbottom || myright < otherleft || myleft > otherright) {
+      crash = false;
     }
-    return points;
+    return crash;
   };
 }
