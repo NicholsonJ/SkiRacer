@@ -1,8 +1,12 @@
 var maxFlakes = 25;
 var flakesArray = [];
+var treesArray = [];
+var fansArray = [];
 var angle = 0;
 var trees = new Image();
 trees.src = 'images/Snowy_Tree.jpg';
+var fans = new Image();
+fans.src = 'images/fans.jpg';
 
 function Bonus(x, y, width, height, imgSrc, ctx) {
   this.x = x;
@@ -21,7 +25,6 @@ function Tree(x, y, width, height, ctx) {
 
   this.drawTrees = function() {
     this.ctx.drawImage(trees, this.x, this.y, this.width, this.height);
-    //console.log(this.ctx.drawImage);
   };
 }
 
@@ -31,22 +34,44 @@ function createTrees() {
   treesArray.push(new Tree(x, y, 40, 40, ctx));
 }
 
-/*
-function createGate() {
-  var y = canvasHeight;
-  var minWidth = 1;
-  var maxWidth = 360;
-  var width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth);
-  var minGap = 90;
-  var maxGap = 200;
-  var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-  if (width + gap >= 430) {
-    width = 330;
-    gap = 80;
+function updateTrees() {
+  for (i = 0; i < treesArray.length; i++) {
+    treesArray[i].y -= 10;
+    treesArray[i].drawTrees();
+    if (treesArray[i].y < -80) {
+      treesArray.splice(i, 1);
+    }
+    if (treesArray.length > 1 && !racer.deductPoints(treesArray[i])) {
+      score--;
+    }
   }
-  myGates.push(new Gate(width, y, 10, 40, gateRed, ctx));
-  myGates.push(new Gate(width + gap, y, 10, 40, gateBlue, ctx));
-}*/
+}
+
+//fans
+
+// function Fans(x, y, width, height, ctx) {
+//     this.x = x;
+//     this.y = y;
+//     this.width = width;
+//     this.height = height;
+//     this.ctx = ctx;
+//
+//     this.drawFans = function() {
+//       this.ctx.drawImage(fans, this.x, this.y, this.width, this.height);
+//     };
+//   }
+//
+// function createFans(){
+//     var y = canvasHeight;
+//   var x = Math.floor(Math.random() * canvasWidth);
+//   fansArray.push(new Fan(x, y, 40, 40, ctx));
+// }
+//
+// function updateFans(){
+//     for (i = 0; i < fansArray.length; i++) {
+//         fansArray[i].y -= 10;
+//         fansArray[i].drawFans();
+// }
 
 //snowflakes
 function createSnowflakes() {
