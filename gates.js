@@ -1,7 +1,8 @@
 var gateRed = 'images/ski-gate-red.jpg';
 var gateBlue = 'images/ski-gate-blue.jpg';
-var finishGate = 'images/FinishGate.jpg';
+var finishGate = 'images/FinishGate.png';
 var myGates = [];
+var finishGateArray = [];
 
 function Gate(x, y, width, height, imgSrc, ctx) {
   this.x = x;
@@ -19,6 +20,7 @@ function Gate(x, y, width, height, imgSrc, ctx) {
     this.ctx.drawImage(this.img, this.x, this.y, this.img.width / 10, this.height); //!!
   };
 }
+
 function createGate() {
   var y = canvasHeight;
   var minWidth = 1;
@@ -39,17 +41,40 @@ function updateGates() {
   if (myGates.length >= 2) {
     for (i = 0; i < myGates.length; i++) {
       myGates[i].y -= 10;
-      myGates[i].drawGates();
-      if (myGates[i].y < -80) {
-        myGates.splice(i, 1);
+      if (myGates.length >= 2 && !racer.accumulatePoints(myGates[0], myGates[1])) {
+        score += 1;
+        console.log('points+');
       }
     }
-    if (myGates.length >= 2 && !racer.accumulatePoints(myGates[0], myGates[1])) {
-      score += 1;
+  }
+}
+
+function limitGatesArray() {
+  for (i = 0; i < myGates.length; i++) {
+    if (myGates[i].y < -80) {
+      myGates.splice(i, 1);
     }
   }
 }
 
 function createFinishGate() {
-  theFinish = new Gate(50, canvasHeight, 400, 300, finishGate, ctx);
+  var y = canvasHeight;
+  finishGateArray.push(new Gate(50, y, 400, 300, finishGate, ctx));
+}
+
+function updateFinishGate() {
+  for (var i = 0; i < fansArray.length; i++) {
+    fansArray[i].y -= 10;
+    fansArray[i].drawFans();
+    if (fansArray[i].y < -80) {
+      fansArray.splice(i, 1);
+    }
+  }
+  for (var i = 0; i < finishGateArray.length; i++) {
+    finishGate[i].y -= 10;
+    finishGate.drawFinalGate();
+    if (finishGateArray[i].y < -80) {
+      finishGateArray.splice(i, 1);
+    }
+  }
 }

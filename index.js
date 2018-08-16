@@ -3,6 +3,7 @@ var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
 var canvasWidth = ctx.canvas.width;
 var canvasHeight = ctx.canvas.height;
+var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
 
 //basic vars
 var isGameStarted = false;
@@ -13,9 +14,9 @@ var level = 1;
 
 //pictures
 var winningSkiier = new Image();
-winningSkiier.src = '/images/youWon.jpg';
+winningSkiier.src = 'images/youWon.jpg';
 var crashedSkiier = new Image();
-crashedSkiier.src = '/images/CrashedSkiier.jpg';
+crashedSkiier.src = 'images/fallenskiier.png';
 
 //characters
 var racer = new RacerConstructor(250, racerImageL, ctx);
@@ -54,16 +55,16 @@ window.onload = function() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     frames++;
     background();
-
     countdown();
+
     //conditionals
     if (frames % 30 === 0) {
       createMogul();
     }
-    if (frames % 75 === 0 && frames < 1100) {
+    if (frames % 75 === 0 && frames < 1100 * level) {
       createGate();
     }
-    if (frames % 50 === 0 && frames < 1100) {
+    if (frames % (50 - 3 * level) === 0 && frames < 1100 * level) {
       createTrees();
     }
     if (frames % 2 === 0) {
@@ -75,26 +76,44 @@ window.onload = function() {
 
     //move
     updateMogul();
-    updateGates();
     updateTrees();
+    treeLimitArray();
+    mogulLimitArray();
+    limitGatesArray();
     updateSnowflakes();
 
+    //draw
+    for (var i = 0; i < mogulArray.length; i++) {
+      mogulArray[i].drawMogul();
+    }
+    for (var i = 0; i < treesArray.length; i++) {
+      treesArray[i].drawTrees();
+    }
+    for (var i = 0; i < myGates.length; i++) {
+      myGates[i].drawGates();
+    }
+
     //check if finished
-    if (frames >= 1100) {
+    if (frames >= 1100 * level) {
       createFans();
       finishGate();
+      //createFinishGate();
+      //updateFinishGate();
     }
 
     //draw
+    updateGates();
     racer.drawRacer();
     drawScore();
     drawSnowflakes();
 
     //stop game
-    if (frames === 1173) {
+    if (theFinish.y <= 0) {
       stopGame();
     }
   }
+
+  function rules() {}
 
   function countdown() {
     if (frames < 25) {
@@ -139,45 +158,21 @@ window.onload = function() {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
       if (score >= 0) {
-        grd.addColorStop(0, '#F6F6F6'); //white
-        grd.addColorStop(1, '#78828E'); //grey
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, 500, 900);
-        ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
-        ctx.globalAlpha = 0.3;
-        ctx.fillStyle = 'black';
-        ctx.fillRect(50, 0, 400, 110);
-        ctx.globalAlpha = 1;
-        ctx.font = '40px monospace';
-        ctx.fillStyle = '#BE8238';
-        ctx.textAlign = 'center';
-        ctx.fillText('You won!', 250, 50);
-        ctx.fillText('Your score: ' + score, 250, 80);
+        wonGame();
         setTimeout(function() {
           nextLevel();
         }, 4000);
       } else {
-        ctx.drawImage(crashedSkiier, -50, 0, canvasWidth + 100, canvasHeight);
-        ctx.fillStyle = 'black';
-        ctx.globalAlpha = 0.3;
-        ctx.fillRect(50, 50, 400, 110);
-        ctx.font = '40px monospace';
-        ctx.globalAlpha = 0.9;
-        ctx.fillStyle = '#B30808';
-        ctx.textAlign = 'center';
-        ctx.fillText('Yard Sale...', 250, 100);
-        ctx.font = '30px monospace';
-        ctx.fillText('Better luck next time!', 250, 130);
-        ctx.font = '50px monospace';
-        ctx.fillStyle = '#22284A';
-        ctx.fillText('Your score: ' + score, 250, 650);
+        // lostGame();
+        setInterval(lostGame, 1000 / 40);
         document.getElementById('refresh').style.display = 'block';
       }
-    }, 3000);
+    }, 2000);
   }
 
   function nextLevel() {
-    theFinish = new Gate(50, canvasHeight, 400, 300, finishGate, ctx);
+    theFinish.y = canvasHeight;
+    fansArray = [];
     frames = 1;
     score = 0;
     level++;
@@ -192,17 +187,57 @@ window.onload = function() {
     }
     theFinish.drawFinalGate();
   }
+
   function background() {
     ctx.save();
     ctx.globalAlpha = 0.9;
     ctx.fillStyle = '#F6F6F6';
-    var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
+    // var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
 
-    grd.addColorStop(0, '#F6F6F6'); //white
-    grd.addColorStop(1, '#78828E'); //grey
+    grd.addColorStop(0, '#DAE1F7'); //top
+    grd.addColorStop(0.5, '#F3F6F9'); //middle
+    grd.addColorStop(1, '#B8E1D1'); //bottom
 
     ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 500, 900);
+    ctx.fillRect(0, 0, 500, 700);
     ctx.restore();
+  }
+
+  function lostGame() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(crashedSkiier, 40, 200, canvasWidth - 80, canvasHeight - 400);
+    ctx.fillStyle = 'black';
+    // ctx.globalAlpha = 0.3;
+    // ctx.fillRect(50, 50, 400, 110);
+    ctx.font = '40px monospace';
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = '#5661A2';
+    ctx.textAlign = 'center';
+    ctx.fillText('Yard Sale...', 250, 70);
+    ctx.font = '30px monospace';
+    ctx.fillText('Better luck next time!', 250, 100);
+    ctx.font = '50px monospace';
+    ctx.fillStyle = '#22284A';
+    ctx.fillText('Your score: ' + score, 250, 650);
+    createSnowflakes();
+    updateSnowflakes();
+    drawSnowflakes();
+  }
+
+  function wonGame() {
+    grd.addColorStop(0, '#F6F6F6'); //white
+    grd.addColorStop(1, '#78828E'); //grey
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 500, 900);
+    ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(50, 0, 400, 110);
+    ctx.globalAlpha = 1;
+    ctx.font = '40px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('You won!', 250, 50);
+    ctx.fillText('Your score: ' + score, 250, 80);
   }
 };

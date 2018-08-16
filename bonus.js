@@ -7,19 +7,11 @@ var angle = 0;
 
 //Images
 var trees = new Image();
-trees.src = 'images/Snowy_Tree.jpg';
+trees.src = 'images/Snowy_Tree.png';
 var fans = new Image();
 fans.src = 'images/fans.jpg';
 var mogulImg = new Image();
-mogulImg.src = '/images/moguls.png';
-
-function Bonus(x, y, width, height, imgSrc, ctx) {
-  this.x = x;
-  this.y = y;
-  this.ctx = ctx;
-  this.width = width;
-  this.height = height;
-}
+mogulImg.src = 'images/moguls.png';
 
 function Tree(x, y, width, height, ctx) {
   this.x = x;
@@ -41,16 +33,17 @@ function createTrees() {
 function updateTrees() {
   for (i = 0; i < treesArray.length; i++) {
     treesArray[i].y -= 10;
-    treesArray[i].drawTrees();
-    if (treesArray[i].y < -80) {
-      treesArray.splice(i, 1);
-    }
-
     if (treesArray.length > 0 && !treesArray[i].crashed && racer.deductPoints(treesArray[i])) {
-      console.log(treesArray[i].crashed);
-      console.log('inside trees deduction');
       treesArray[i].crashed = true;
       score--;
+    }
+  }
+}
+
+function treeLimitArray() {
+  for (i = 0; i < treesArray.length; i++) {
+    if (treesArray[i].y < -80) {
+      treesArray.splice(i, 1);
     }
   }
 }
@@ -84,6 +77,14 @@ function updateMogul() {
   }
 }
 
+function mogulLimitArray() {
+  for (i = 0; i < mogulArray.length; i++) {
+    if (mogulArray[i].y < -80) {
+      mogulArray.splice(i, 1);
+    }
+  }
+}
+
 //fans
 
 function Fans(x, y, width, height, ctx) {
@@ -102,12 +103,6 @@ function createFans() {
   var x = Math.floor(Math.random() * (canvasWidth + 300) - 300);
   fansArray.push(new Fans(x, y, 200, 200, ctx));
 }
-//
-// function updateFans(){
-//     for (i = 0; i < fansArray.length; i++) {
-//         fansArray[i].y -= 10;
-//         fansArray[i].drawFans();
-// }
 
 //snowflakes
 function createSnowflakes() {
