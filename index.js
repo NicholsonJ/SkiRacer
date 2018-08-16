@@ -14,7 +14,7 @@ var level = 1;
 
 //pictures
 var winningSkiier = new Image();
-winningSkiier.src = 'images/youWon.jpg';
+winningSkiier.src = 'images/youWon.png';
 var crashedSkiier = new Image();
 crashedSkiier.src = 'images/fallenskiier.png';
 
@@ -48,7 +48,15 @@ window.onload = function() {
   };
 
   function startGame() {
-    interval = setInterval(updateCanvas, 1000 / 40); //!!
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.font = '40px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('Level: ' + level, 250, 250);
+    setTimeout(function() {
+      interval = setInterval(updateCanvas, 1000 / 40); //!!
+    }, 1000);
   }
 
   function updateCanvas() {
@@ -56,6 +64,7 @@ window.onload = function() {
     frames++;
     background();
     countdown();
+    updateSnowtrail(racer.x, racer.y, ctx);
 
     //conditionals
     if (frames % 30 === 0) {
@@ -176,7 +185,16 @@ window.onload = function() {
     frames = 1;
     score = 0;
     level++;
-    interval = setInterval(updateCanvas, 1000 / (40 + 5 * level));
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.font = '40px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('Level: ' + level, 250, 250);
+
+    setTimeout(function() {
+      interval = setInterval(updateCanvas, 1000 / (40 + 5 * level));
+    }, 1000);
   }
 
   function finishGate() {
@@ -225,15 +243,12 @@ window.onload = function() {
   }
 
   function wonGame() {
-    grd.addColorStop(0, '#F6F6F6'); //white
-    grd.addColorStop(1, '#78828E'); //grey
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 500, 900);
-    ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
-    ctx.globalAlpha = 0.3;
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(winningSkiier, 40, 200, canvasWidth - 80, canvasHeight - 400);
+    //ctx.globalAlpha = 0.3;
     ctx.fillStyle = 'black';
-    ctx.fillRect(50, 0, 400, 110);
-    ctx.globalAlpha = 1;
+    //ctx.fillRect(50, 0, 400, 110);
+    //ctx.globalAlpha = 1;
     ctx.font = '40px monospace';
     ctx.fillStyle = '#BE8238';
     ctx.textAlign = 'center';

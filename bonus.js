@@ -4,6 +4,8 @@ var treesArray = [];
 var fansArray = [];
 var mogulArray = [];
 var angle = 0;
+var motionTrailLength = 30;
+var positions = [];
 
 //Images
 var trees = new Image();
@@ -155,5 +157,40 @@ function updateSnowflakes() {
         }
       }
     }
+  }
+}
+
+//create snow trail
+function updateSnowtrail(xPos, yPos, ctx) {
+  for (var i = 0; i < positions.length; i++) {
+    var ratio = i + 1; // / positions.length;
+    drawCircle(positions[i].x, positions[i].y, i, ratio);
+  }
+
+  drawCircle(xPos, yPos, 'initial');
+
+  storeLastPosition(xPos, yPos);
+}
+
+function drawCircle(x, y, i, ratio) {
+  if (ratio == 'initial') {
+    ratio = 1;
+  } else {
+    ratio / 3;
+  }
+  if (i === 0) i = 1;
+  ctx.beginPath();
+  ctx.arc(x, y, i, 0, 2 * Math.PI, true);
+  ctx.fillStyle = 'rgba(265,265,265, ' + ratio + ')';
+  ctx.fill();
+}
+
+function storeLastPosition(xPos, yPos) {
+  positions.push({
+    x: xPos + 40,
+    y: yPos + 40
+  });
+  if (positions.length > motionTrailLength) {
+    positions.shift();
   }
 }
