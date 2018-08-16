@@ -2,11 +2,16 @@ var maxFlakes = 25;
 var flakesArray = [];
 var treesArray = [];
 var fansArray = [];
+var mogulArray = [];
 var angle = 0;
+
+//Images
 var trees = new Image();
 trees.src = 'images/Snowy_Tree.jpg';
 var fans = new Image();
 fans.src = 'images/fans.jpg';
+var mogulImg = new Image();
+mogulImg.src = '/images/moguls.png';
 
 function Bonus(x, y, width, height, imgSrc, ctx) {
   this.x = x;
@@ -46,6 +51,35 @@ function updateTrees() {
       console.log('inside trees deduction');
       treesArray[i].crashed = true;
       score--;
+    }
+  }
+}
+
+//moguls
+function Mogul(x, y, width, height, ctx) {
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
+  this.ctx = ctx;
+
+  this.drawMogul = function() {
+    this.ctx.drawImage(mogulImg, this.x, this.y, this.width, this.height);
+  };
+}
+
+function createMogul() {
+  var y = canvasHeight;
+  var x = Math.floor(Math.random() * canvasWidth);
+  mogulArray.push(new Mogul(x, y, 200, 30, ctx));
+}
+
+function updateMogul() {
+  for (i = 0; i < mogulArray.length; i++) {
+    mogulArray[i].y -= 10;
+    mogulArray[i].drawMogul();
+    if (mogulArray[i].y < -80) {
+      mogulArray.splice(i, 1);
     }
   }
 }

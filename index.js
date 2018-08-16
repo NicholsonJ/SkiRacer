@@ -55,8 +55,11 @@ window.onload = function() {
     frames++;
     background();
 
-    //conditionals
     countdown();
+    //conditionals
+    if (frames % 30 === 0) {
+      createMogul();
+    }
     if (frames % 75 === 0 && frames < 1100) {
       createGate();
     }
@@ -71,6 +74,7 @@ window.onload = function() {
     }
 
     //move
+    updateMogul();
     updateGates();
     updateTrees();
     updateSnowflakes();
@@ -87,7 +91,7 @@ window.onload = function() {
     drawSnowflakes();
 
     //stop game
-    if (frames === 1250) {
+    if (frames === 1173) {
       stopGame();
     }
   }
@@ -125,56 +129,59 @@ window.onload = function() {
     ctx.fillRect(175, 640, 150, 60);
     ctx.font = '30px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#555D68';
+    ctx.fillStyle = '#BE8238';
     ctx.fillText(scoreText, 250, 680);
   }
 
   function stopGame() {
     clearInterval(interval);
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
-    if (score >= 0) {
-      grd.addColorStop(0, '#F6F6F6'); //white
-      grd.addColorStop(1, '#78828E'); //grey
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, 500, 900);
-      ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
-      ctx.globalAlpha = 0.3;
-      ctx.fillStyle = 'black';
-      ctx.fillRect(50, 0, 400, 110);
-      ctx.globalAlpha = 1;
-      ctx.font = '40px monospace';
-      ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
-      ctx.fillText('You won!', 250, 50);
-      ctx.fillText('Your score: ' + score, 250, 80);
-      setTimeout(function() {
-        nextLevel();
-      }, 2000);
-    } else {
-      ctx.drawImage(crashedSkiier, -50, 0, canvasWidth + 100, canvasHeight);
-      ctx.fillStyle = 'black';
-      ctx.globalAlpha = 0.3;
-      ctx.fillRect(50, 50, 400, 110);
-      ctx.font = '40px monospace';
-      ctx.globalAlpha = 0.9;
-      ctx.fillStyle = '#B30808';
-      ctx.textAlign = 'center';
-      ctx.fillText('Yard Sale...', 250, 100);
-      ctx.font = '30px monospace';
-      ctx.fillText('Better luck next time!', 250, 130);
-      ctx.font = '50px monospace';
-      ctx.fillStyle = '#22284A';
-      ctx.fillText('Your score: ' + score, 250, 650);
-      document.getElementById('refresh').style.display = 'block';
-    }
+    setTimeout(function() {
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
+      if (score >= 0) {
+        grd.addColorStop(0, '#F6F6F6'); //white
+        grd.addColorStop(1, '#78828E'); //grey
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, 500, 900);
+        ctx.drawImage(winningSkiier, 0, 0, canvasWidth, canvasHeight);
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(50, 0, 400, 110);
+        ctx.globalAlpha = 1;
+        ctx.font = '40px monospace';
+        ctx.fillStyle = '#BE8238';
+        ctx.textAlign = 'center';
+        ctx.fillText('You won!', 250, 50);
+        ctx.fillText('Your score: ' + score, 250, 80);
+        setTimeout(function() {
+          nextLevel();
+        }, 4000);
+      } else {
+        ctx.drawImage(crashedSkiier, -50, 0, canvasWidth + 100, canvasHeight);
+        ctx.fillStyle = 'black';
+        ctx.globalAlpha = 0.3;
+        ctx.fillRect(50, 50, 400, 110);
+        ctx.font = '40px monospace';
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = '#B30808';
+        ctx.textAlign = 'center';
+        ctx.fillText('Yard Sale...', 250, 100);
+        ctx.font = '30px monospace';
+        ctx.fillText('Better luck next time!', 250, 130);
+        ctx.font = '50px monospace';
+        ctx.fillStyle = '#22284A';
+        ctx.fillText('Your score: ' + score, 250, 650);
+        document.getElementById('refresh').style.display = 'block';
+      }
+    }, 3000);
   }
 
   function nextLevel() {
+    theFinish = new Gate(50, canvasHeight, 400, 300, finishGate, ctx);
     frames = 1;
     score = 0;
     level++;
-    interval = setInterval(updateCanvas, 1000 / (40 + 10 * level));
+    interval = setInterval(updateCanvas, 1000 / (40 + 5 * level));
   }
 
   function finishGate() {

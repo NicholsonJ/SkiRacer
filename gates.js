@@ -49,3 +49,7 @@ function updateGates() {
     }
   }
 }
+
+function createFinishGate() {
+  theFinish = new Gate(50, canvasHeight, 400, 300, finishGate, ctx);
+}
