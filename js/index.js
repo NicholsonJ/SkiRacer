@@ -6,6 +6,9 @@ var canvasHeight = ctx.canvas.height;
 var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
 
 //basic vars
+var startButton = document.getElementById('start-button');
+var canvasCSS = document.getElementById('game');
+var headerImage = document.getElementById('headerImage');
 var isGameStarted = false;
 var frames = 1;
 var score = 0;
@@ -17,14 +20,19 @@ var winningSkiier = new Image();
 winningSkiier.src = 'images/youWon.png';
 var crashedSkiier = new Image();
 crashedSkiier.src = 'images/fallenskiier.png';
+var arrows = new Image();
+arrows.src = 'images/arrows.png';
 
 //characters
 var racer = new RacerConstructor(250, racerImageL, ctx);
 var theFinish = new Gate(50, canvasHeight, 400, 300, finishGate, ctx);
 
 window.onload = function() {
-  document.getElementById('start-button').onclick = function() {
-    document.getElementById('game-wrapper').scrollIntoView();
+  //all button responses
+  startButton.onclick = function() {
+    startButton.style.visibility = 'hidden';
+    headerImage.style.visibility = 'hidden';
+    canvasCSS.style.visibility = 'visible';
     if (!isGameStarted) {
       startGame();
       isGameStarted = true;
@@ -44,29 +52,16 @@ window.onload = function() {
   };
   document.getElementById('refresh').onclick = function() {
     location.reload();
-    document.getElementById('header').scrollIntoView();
   };
-
-  function startGame() {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    ctx.font = '40px monospace';
-    ctx.fillStyle = '#BE8238';
-    ctx.textAlign = 'center';
-    ctx.fillText('Level: ' + level, 250, 250);
-    setTimeout(function() {
-      interval = setInterval(updateCanvas, 1000 / 40); //!!
-    }, 1000);
-  }
 
   function updateCanvas() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     frames++;
     background();
     countdown();
-    updateSnowtrail(racer.x, racer.y, ctx);
 
     //conditionals
+
     if (frames % 30 === 0) {
       createMogul();
     }
@@ -84,12 +79,13 @@ window.onload = function() {
     }
 
     //move
+    updateSnowtrail(racer.x, racer.y, ctx);
     updateMogul();
     updateTrees();
+    updateSnowflakes();
     treeLimitArray();
     mogulLimitArray();
     limitGatesArray();
-    updateSnowflakes();
 
     //draw
     for (var i = 0; i < mogulArray.length; i++) {
@@ -103,11 +99,9 @@ window.onload = function() {
     }
 
     //check if finished
-    if (frames >= 1100 * level) {
+    if (frames >= 1100 + 2 * level) {
       createFans();
       finishGate();
-      //createFinishGate();
-      //updateFinishGate();
     }
 
     //draw
@@ -122,7 +116,65 @@ window.onload = function() {
     }
   }
 
-  function rules() {}
+  function startGame() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.save();
+    ctx.font = '30px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('To move your skiier:', 250, 250);
+    ctx.drawImage(arrows, 100, 300, 300, 200);
+    ctx.fillText('Use left and right arrows', 250, 550);
+    ctx.restore();
+    setTimeout(function() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.save();
+      ctx.font = '30px monospace';
+      ctx.fillStyle = '#BE8238';
+      ctx.textAlign = 'center';
+      ctx.fillText('Get through the gates', 250, 250);
+      ctx.drawImage(gateRed, 100, 300, 150, 150);
+
+      ctx.fillText('and earn points', 250, 550);
+      ctx.restore();
+    }, 2000);
+    setTimeout(function() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.save();
+      ctx.font = '30px monospace';
+      ctx.fillStyle = '#BE8238';
+      ctx.textAlign = 'center';
+      ctx.fillText('Hit a tree?', 250, 250);
+      ctx.drawImage(trees, 100, 300, 200, 200);
+      ctx.fillText('Lose points!', 250, 550);
+      ctx.restore();
+    }, 4000);
+
+    setTimeout(function() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.save();
+      ctx.font = '40px monospace';
+      ctx.fillStyle = '#BE8238';
+      ctx.textAlign = 'center';
+      ctx.fillText('Level: ' + level, 250, 250);
+      ctx.restore();
+    }, 6000);
+
+    setTimeout(function() {
+      interval = setInterval(updateCanvas, 1000 / 40); //!!
+    }, 8000);
+  }
+  function background() {
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = '#F6F6F6';
+    grd.addColorStop(0, '#DAE1F7'); //top
+    grd.addColorStop(0.5, '#F3F6F9'); //middle
+    grd.addColorStop(1, '#B8E1D1'); //bottom
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 500, 700);
+    ctx.restore();
+  }
 
   function countdown() {
     if (frames < 25) {
@@ -132,26 +184,18 @@ window.onload = function() {
       ctx.fillText('3', 250, 300);
     }
     if (frames < 50 && frames > 25) {
-      ctx.font = '80px monospace';
-      ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
       ctx.fillText('2', 250, 300);
     }
     if (frames < 75 && frames > 50) {
-      ctx.font = '80px monospace';
-      ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
       ctx.fillText('1', 250, 300);
     }
     if (frames < 100 && frames > 75) {
-      ctx.font = '80px monospace';
-      ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
       ctx.fillText('GO!', 250, 300);
     }
   }
 
   function drawScore() {
+    ctx.save();
     var scoreText = 'Score: ' + score;
     ctx.fillStyle = 'black';
     ctx.fillRect(175, 640, 150, 60);
@@ -159,44 +203,8 @@ window.onload = function() {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#BE8238';
     ctx.fillText(scoreText, 250, 680);
+    ctx.restore();
   }
-
-  function stopGame() {
-    clearInterval(interval);
-    setTimeout(function() {
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
-      if (score >= 0) {
-        wonGame();
-        setTimeout(function() {
-          nextLevel();
-        }, 4000);
-      } else {
-        // lostGame();
-        setInterval(lostGame, 1000 / 40);
-        document.getElementById('refresh').style.display = 'block';
-      }
-    }, 2000);
-  }
-
-  function nextLevel() {
-    theFinish.y = canvasHeight;
-    fansArray = [];
-    frames = 1;
-    score = 0;
-    level++;
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    ctx.font = '40px monospace';
-    ctx.fillStyle = '#BE8238';
-    ctx.textAlign = 'center';
-    ctx.fillText('Level: ' + level, 250, 250);
-
-    setTimeout(function() {
-      interval = setInterval(updateCanvas, 1000 / (40 + 5 * level));
-    }, 1000);
-  }
-
   function finishGate() {
     theFinish.y -= 10;
     for (i = 0; i < fansArray.length; i++) {
@@ -205,28 +213,63 @@ window.onload = function() {
     }
     theFinish.drawFinalGate();
   }
-
-  function background() {
-    ctx.save();
-    ctx.globalAlpha = 0.9;
-    ctx.fillStyle = '#F6F6F6';
-    // var grd = ctx.createLinearGradient(0, 0, canvasHeight, canvasWidth);
-
-    grd.addColorStop(0, '#DAE1F7'); //top
-    grd.addColorStop(0.5, '#F3F6F9'); //middle
-    grd.addColorStop(1, '#B8E1D1'); //bottom
-
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 500, 700);
-    ctx.restore();
+  function stopGame() {
+    clearInterval(interval);
+    setTimeout(function() {
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      if (score > 0) {
+        frames = 1;
+        interval = setInterval(wonGame, 1000 / 40);
+      } else {
+        interval = setInterval(lostGame, 1000 / 40);
+        document.getElementById('refresh').style.display = 'block';
+      }
+    }, 2000);
   }
-
+  function wonGame() {
+    frames++;
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(winningSkiier, 40, 200, canvasWidth - 80, canvasHeight - 400);
+    ctx.save();
+    ctx.fillStyle = 'black';
+    ctx.font = '40px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('You won!', 250, 50);
+    ctx.fillText('Your score: ' + score, 250, 80);
+    ctx.restore();
+    createSnowflakes();
+    updateSnowflakes();
+    drawSnowflakes();
+    if (frames >= 100) {
+      clearInterval(interval);
+      nextLevel();
+    }
+  }
+  function nextLevel() {
+    theFinish.y = canvasHeight;
+    racer.y = -80;
+    racer.x = 250;
+    fansArray = [];
+    frames = 1;
+    score = 0;
+    level++;
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.save();
+    ctx.font = '40px monospace';
+    ctx.fillStyle = '#BE8238';
+    ctx.textAlign = 'center';
+    ctx.fillText('Level: ' + level, 250, 250);
+    ctx.restore();
+    setTimeout(function() {
+      interval = setInterval(updateCanvas, 1000 / (40 + 5 * level));
+    }, 1000);
+  }
   function lostGame() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.drawImage(crashedSkiier, 40, 200, canvasWidth - 80, canvasHeight - 400);
+    ctx.save();
     ctx.fillStyle = 'black';
-    // ctx.globalAlpha = 0.3;
-    // ctx.fillRect(50, 50, 400, 110);
     ctx.font = '40px monospace';
     ctx.globalAlpha = 0.9;
     ctx.fillStyle = '#5661A2';
@@ -237,22 +280,9 @@ window.onload = function() {
     ctx.font = '50px monospace';
     ctx.fillStyle = '#22284A';
     ctx.fillText('Your score: ' + score, 250, 650);
+    ctx.restore();
     createSnowflakes();
     updateSnowflakes();
     drawSnowflakes();
-  }
-
-  function wonGame() {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.drawImage(winningSkiier, 40, 200, canvasWidth - 80, canvasHeight - 400);
-    //ctx.globalAlpha = 0.3;
-    ctx.fillStyle = 'black';
-    //ctx.fillRect(50, 0, 400, 110);
-    //ctx.globalAlpha = 1;
-    ctx.font = '40px monospace';
-    ctx.fillStyle = '#BE8238';
-    ctx.textAlign = 'center';
-    ctx.fillText('You won!', 250, 50);
-    ctx.fillText('Your score: ' + score, 250, 80);
   }
 };

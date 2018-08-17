@@ -10,7 +10,7 @@ function Gate(x, y, width, height, imgSrc, ctx) {
   this.ctx = ctx;
   this.width = width;
   this.height = height;
-
+  this.points = false;
   this.img = new Image();
   this.img.src = imgSrc;
   this.drawFinalGate = function() {
@@ -29,6 +29,7 @@ function createGate() {
   var minGap = 90;
   var maxGap = 200;
   var gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+
   if (width + gap >= 430) {
     width = 330;
     gap = 80;
@@ -41,9 +42,8 @@ function updateGates() {
   if (myGates.length >= 2) {
     for (i = 0; i < myGates.length; i++) {
       myGates[i].y -= 10;
-      if (myGates.length >= 2 && !racer.accumulatePoints(myGates[0], myGates[1])) {
+      if (myGates.length >= 2 && !myGates[i].points && !racer.accumulatePoints(myGates[0], myGates[1])) {
         score += 1;
-        console.log('points+');
       }
     }
   }

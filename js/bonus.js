@@ -135,24 +135,15 @@ function updateSnowflakes() {
   angle += 0.01;
   for (var i = 0; i < maxFlakes; i++) {
     var p = flakesArray[i];
-
-    //Updating X and Y coordinates
     p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
     p.x += Math.sin(angle) * 2;
-
-    //Sending flakes back from the top when it exits
-    //Lets make it a bit more organic and let flakes enter from the left and right also.
     if (p.x > canvasWidth + 5 || p.x < -5 || p.y > canvasHeight) {
       if (i % 3 > 0) {
-        //66.67% of the flakes
         flakesArray[i] = { x: Math.random() * canvasWidth, y: -10, r: p.r, d: p.d };
       } else {
-        //If the flake is exitting from the right
         if (Math.sin(angle) > 0) {
-          //Enter from the left
           flakesArray[i] = { x: -5, y: Math.random() * canvasHeight, r: p.r, d: p.d };
         } else {
-          //Enter from the right
           flakesArray[i] = { x: canvasWidth + 5, y: Math.random() * canvasHeight, r: p.r, d: p.d };
         }
       }
@@ -166,23 +157,17 @@ function updateSnowtrail(xPos, yPos, ctx) {
     var ratio = i + 1; // / positions.length;
     drawCircle(positions[i].x, positions[i].y, i, ratio);
   }
-
-  drawCircle(xPos, yPos, 'initial');
-
   storeLastPosition(xPos, yPos);
 }
 
-function drawCircle(x, y, i, ratio) {
-  if (ratio == 'initial') {
-    ratio = 1;
-  } else {
-    ratio / 3;
-  }
-  if (i === 0) i = 1;
+function drawCircle(x, y, radius, ratio) {
+  ratio / 3;
+  ctx.save();
   ctx.beginPath();
-  ctx.arc(x, y, i, 0, 2 * Math.PI, true);
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
   ctx.fillStyle = 'rgba(265,265,265, ' + ratio + ')';
   ctx.fill();
+  ctx.restore();
 }
 
 function storeLastPosition(xPos, yPos) {

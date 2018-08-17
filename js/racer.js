@@ -28,11 +28,11 @@ function RacerConstructor(x, racerImg, ctx) {
   this.accumulatePoints = function(gateL, gateR) {
     var racerRight = this.x + this.width;
     var racerLeft = this.x;
-    var racerTop = this.y;
+    var racerTop = this.y + 70;
     var racerBottom = this.y + this.height;
 
-    var gapLeft = gateL.x;
-    var gapRight = gateR.x + gateR.width;
+    var gapLeft = gateL.x - 5;
+    var gapRight = gateR.x + gateR.width + 5;
     var gapTop = gateL.y - 40;
     var gapBottom = gateL.y + gateL.height;
     var points = true;
@@ -43,10 +43,11 @@ function RacerConstructor(x, racerImg, ctx) {
       racerTop >= gapTop
     ) {
       points = false;
+      gateL.points = true;
+      gateR.points = true;
     }
     return points;
   };
-
   this.deductPoints = function(trees) {
     var myleft = this.x;
     var myright = this.x + this.width;
