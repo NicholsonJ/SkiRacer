@@ -117,53 +117,78 @@ window.onload = function() {
   }
 
   function startGame() {
+    interval = setInterval(rules, 1000 / 40);
+  }
+
+  function rules() {
+    frames++;
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.save();
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = '#D2EBE8';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.globalAlpha = 1;
     ctx.font = '30px monospace';
     ctx.fillStyle = '#BE8238';
     ctx.textAlign = 'center';
     ctx.fillText('To move your skiier:', 250, 250);
     ctx.drawImage(arrows, 100, 300, 300, 200);
     ctx.fillText('Use left and right arrows', 250, 550);
-    ctx.restore();
-    setTimeout(function() {
+    if (frames >= 100) {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.save();
-      ctx.font = '30px monospace';
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#D2EBE8';
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
+      ctx.globalAlpha = 1;
       ctx.fillText('Get through the gates', 250, 250);
-      ctx.drawImage(gateRed, 100, 300, 150, 150);
-
-      ctx.fillText('and earn points', 250, 550);
-      ctx.restore();
-    }, 2000);
-    setTimeout(function() {
+      ctx.drawImage(redGateImg, 75, 300, 150, 150);
+      ctx.drawImage(blueGateImg, 325, 300, 150, 150);
+      ctx.fillText('to earn points', 250, 550);
+    }
+    if (frames >= 200) {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.save();
-      ctx.font = '30px monospace';
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#D2EBE8';
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
-      ctx.fillText('Hit a tree?', 250, 250);
-      ctx.drawImage(trees, 100, 300, 200, 200);
+      ctx.globalAlpha = 1;
+      ctx.fillText('Get too close to a tree?', 250, 250);
+      ctx.drawImage(trees, 150, 300, 200, 200);
       ctx.fillText('Lose points!', 250, 550);
-      ctx.restore();
-    }, 4000);
-
-    setTimeout(function() {
+    }
+    if (frames >= 300) {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.save();
-      ctx.font = '40px monospace';
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#D2EBE8';
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.globalAlpha = 1;
       ctx.fillStyle = '#BE8238';
-      ctx.textAlign = 'center';
+      ctx.fillText('Score 5 Points', 250, 250);
+      ctx.fillText('to level up!', 250, 350);
+    }
+    if (frames >= 400) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#D2EBE8';
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#BE8238';
+      ctx.font = '40px monospace';
       ctx.fillText('Level: ' + level, 250, 250);
-      ctx.restore();
-    }, 6000);
-
-    setTimeout(function() {
-      interval = setInterval(updateCanvas, 1000 / 40); //!!
-    }, 8000);
+    }
+    if (frames >= 500) {
+      clearInterval(interval);
+      frames = 1;
+      interval = setInterval(updateCanvas, 1000 / 40);
+    }
+    createSnowflakes();
+    updateSnowflakes();
+    drawSnowflakes();
   }
+
   function background() {
     ctx.save();
     ctx.globalAlpha = 0.9;
@@ -217,7 +242,7 @@ window.onload = function() {
     clearInterval(interval);
     setTimeout(function() {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      if (score > 0) {
+      if (score > 4) {
         frames = 1;
         interval = setInterval(wonGame, 1000 / 40);
       } else {

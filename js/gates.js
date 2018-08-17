@@ -1,5 +1,9 @@
 var gateRed = 'images/ski-gate-red.jpg';
+var redGateImg = new Image();
+redGateImg.src = gateRed;
 var gateBlue = 'images/ski-gate-blue.jpg';
+var blueGateImg = new Image();
+blueGateImg.src = gateBlue;
 var finishGate = 'images/FinishGate.png';
 var myGates = [];
 var finishGateArray = [];
