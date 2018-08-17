@@ -126,7 +126,7 @@ window.onload = function() {
     ctx.save();
     ctx.globalAlpha = 0.5;
     ctx.fillStyle = '#D2EBE8';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(10, 10, canvasWidth - 10, canvasHeight - 10);
     ctx.globalAlpha = 1;
     ctx.font = '30px monospace';
     ctx.fillStyle = '#BE8238';
@@ -138,7 +138,7 @@ window.onload = function() {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = '#D2EBE8';
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.fillRect(10, 10, canvasWidth - 10, canvasHeight - 10);
       ctx.fillStyle = '#BE8238';
       ctx.globalAlpha = 1;
       ctx.fillText('Get through the gates', 250, 250);
@@ -150,7 +150,7 @@ window.onload = function() {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = '#D2EBE8';
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.fillRect(10, 10, canvasWidth - 10, canvasHeight - 10);
       ctx.fillStyle = '#BE8238';
       ctx.globalAlpha = 1;
       ctx.fillText('Get too close to a tree?', 250, 250);
@@ -162,7 +162,7 @@ window.onload = function() {
       ctx.save();
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = '#D2EBE8';
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.fillRect(10, 10, canvasWidth - 10, canvasHeight - 10);
       ctx.globalAlpha = 1;
       ctx.fillStyle = '#BE8238';
       ctx.fillText('Score 5 Points', 250, 250);
@@ -173,7 +173,7 @@ window.onload = function() {
       ctx.save();
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = '#D2EBE8';
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      ctx.fillRect(10, 10, canvasWidth - 10, canvasHeight - 10);
       ctx.globalAlpha = 1;
       ctx.fillStyle = '#BE8238';
       ctx.font = '40px monospace';
